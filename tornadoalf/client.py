@@ -16,18 +16,16 @@ class Client(object):
     token_manager_class = TokenManager
 
     def __init__(self, client_id, client_secret,
-                 grant_type, username, password,
-                 token_endpoint, http_options=None):
+                 token_endpoint, http_options=None,
+                 **kwargs):
         http_options = http_options is None and {} or http_options
         self._http_client = AsyncHTTPClient()
         self._token_manager = self.token_manager_class(
             token_endpoint=token_endpoint,
             client_id=client_id,
             client_secret=client_secret,
-            grant_type=grant_type,
-            username=username,
-            password=password,
-            http_options=http_options)
+            http_options=http_options,
+            **kwargs)
 
     @gen.coroutine
     def fetch(self, request, callback=None, **kwargs):

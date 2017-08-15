@@ -21,15 +21,13 @@ logger = logging.getLogger(__name__)
 class TokenManager(object):
 
     def __init__(self, token_endpoint, client_id,
-                 client_secret, grant_type, username,
-                 password, http_options=None):
+                 client_secret, http_options=None,
+                 **kwargs):
 
         self._token_endpoint = token_endpoint
         self._client_id = client_id
         self._client_secret = client_secret
-        self._grant_type = grant_type
-        self._username = username
-        self._password = password
+        self.request_body = kwargs
         self._token = Token()
         self._http_options = http_options if http_options else {}
         self._http_client = AsyncHTTPClient()
@@ -62,15 +60,15 @@ class TokenManager(object):
         if not self._token_endpoint:
             raise TokenError('Missing token endpoint')
 
+        data = self.request_body
+        if not data.get('grant_type'):
+            data['grant_type'] = 'client_credentials'
+
         token_data = yield self._fetch(
             url=self._token_endpoint,
             method="POST",
             auth=(self._client_id, self._client_secret),
-            data={
-                'grant_type': self._grant_type or 'client_credentials',
-                'username': self._username,
-                'password': self._password
-            }
+            data=data,
         )
 
         raise gen.Return(token_data)
