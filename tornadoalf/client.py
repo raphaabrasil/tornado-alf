@@ -59,6 +59,5 @@ class Client(object):
         logger.debug('Request: %s %s', request.method, request.url)
         for header in request.headers:
             logger.debug('Header %s: %s', header, request.headers[header])
-
-        result = yield self._http_client.fetch(request, callback, **kwargs)
+        result = yield self._http_client.fetch(request, callback, raise_error=False)
         raise gen.Return(result)
