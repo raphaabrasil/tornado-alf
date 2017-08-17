@@ -64,6 +64,10 @@ class TokenManager(object):
         if not data.get('grant_type'):
             data['grant_type'] = 'client_credentials'
 
+        if data.get('has_body_authentication'):
+            data['client_id'] = self._client_id
+            data['client_secret'] = self._client_secret
+
         token_data = yield self._fetch(
             url=self._token_endpoint,
             method="POST",

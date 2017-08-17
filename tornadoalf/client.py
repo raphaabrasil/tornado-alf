@@ -29,11 +29,9 @@ class Client(object):
 
     @gen.coroutine
     def fetch(self, request, callback=None, **kwargs):
-
         # accepts request as string then convert it to HTTPRequest
         if isinstance(request, str):
             request = HTTPRequest(request, **kwargs)
-
         try:
             response = yield self._authorized_fetch(request,
                                                     callback,
